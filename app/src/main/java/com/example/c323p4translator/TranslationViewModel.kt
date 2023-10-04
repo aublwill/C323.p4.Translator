@@ -38,6 +38,24 @@ class TranslationViewModel: ViewModel() {
             .setConfidenceThreshold(0.5f)
             .build()
     )
+    /*
+    method that identifies the source language that the user is typing
+    @param text: string of what to translate
+    @param targetLang: string that identifies the target language
+     */
+    fun autoTranslate(text:String, targetLang: String){
+        languageIdentifier.identifyLanguage(text)
+            .addOnSuccessListener { languageCode ->
+                _sourceLanguage.value = languageCode
+
+                translator = createTranslator(languageCode, targetLang)
+                translator.downloadModelIfNeeded()
+                translator.translate(text)
+                    .addOnSuccessListener { translatedText->
+                        _translatedText.value = translatedText
+                    }
+            }
+    }
 
     /*
     method that initializes translator with default options
@@ -69,29 +87,6 @@ class TranslationViewModel: ViewModel() {
                 Log.e(e.toString(), e.toString())
             }
 
-        /*
-
-        languageIdentifier.identifyLanguage(text)
-            .addOnSuccessListener { languageCode ->
-                _sourceLanguage.value = languageCode
-                _targetLanguage.value = targetLang
-                translator = createTranslator(languageCode, targetLang)
-                translator.downloadModelIfNeeded()
-                translator.translate(text)
-                    .addOnSuccessListener { translatedText ->
-                        _translatedText.value = translatedText
-                    }
-                    .addOnFailureListener{e ->
-                        Log.e(e.toString(), e.toString())
-                    }
-            }
-            .addOnFailureListener{e ->
-                Log.e(e.toString(), e.toString())
-            }
-
-
-         */
-
     }
 
     /*
@@ -100,13 +95,14 @@ class TranslationViewModel: ViewModel() {
     @param targetLanguageCode: string that identifies the target language
      */
     private fun createTranslator(sourceLanguageCode:String, targetLanguageCode:String): Translator{
-        var source = ""
+        var source = sourceLanguageCode
         if (sourceLanguageCode.equals("English"))
             source = TranslateLanguage.ENGLISH
         if (sourceLanguageCode.equals("Spanish"))
             source = TranslateLanguage.SPANISH
         if (sourceLanguageCode.equals("German"))
             source = TranslateLanguage.GERMAN
+
         var target = ""
         if (targetLanguageCode.equals("English"))
             target = TranslateLanguage.ENGLISH

@@ -41,6 +41,8 @@ class TranslateFragment : Fragment() {
                 viewModel.setSourceLanguage("Spanish")
             else if (binding.rbGermS.isChecked)
                 viewModel.setSourceLanguage("German")
+            else if (binding.rbAuto.isChecked)
+                viewModel.setSourceLanguage("AutoDetect")
 
         }
         //target
@@ -58,7 +60,9 @@ class TranslateFragment : Fragment() {
         etWrite.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {
                 val inputText = s.toString()
-                viewModel.translate(inputText, viewModel.sourceLanguage.value.toString(), viewModel.targetLanguage.value.toString())
+                if (binding.rbAuto.isChecked)
+                    viewModel.autoTranslate(inputText, viewModel.targetLanguage.value.toString())
+                else viewModel.translate(inputText, viewModel.sourceLanguage.value.toString(), viewModel.targetLanguage.value.toString())
             }
 
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
