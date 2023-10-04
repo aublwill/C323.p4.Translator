@@ -14,6 +14,7 @@ import com.google.mlkit.nl.translate.TranslateLanguage
 
 
 class TranslateFragment : Fragment() {
+    //variables
     private var _binding: FragmentTranslateBinding? = null
     private val binding get() = _binding!!
     private lateinit var viewModel: TranslationViewModel
@@ -22,15 +23,17 @@ class TranslateFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        //initialize binding and viewModel
         _binding = FragmentTranslateBinding.inflate(inflater, container, false)
         val view = binding.root
-
-        //(activity as AppCompatActivity).setContentView(binding.etWrite)
         viewModel = ViewModelProvider(this).get(TranslationViewModel::class.java)
 
+        //RadioGroups
         val sourceLangRG = binding.sourceRG
         val targetLangRG = binding.targetRG
 
+        //checks radiogroups when changed, updates them as needed
+        //source
         sourceLangRG.setOnCheckedChangeListener{group, checkedId ->
             if (binding.rbEngS.isChecked)
                 viewModel.setSourceLanguage("English")
@@ -40,6 +43,7 @@ class TranslateFragment : Fragment() {
                 viewModel.setSourceLanguage("German")
 
         }
+        //target
         targetLangRG.setOnCheckedChangeListener{group, checkedId ->
             if (binding.rbEngT.isChecked)
                 viewModel.setTargetLanguage("English")
@@ -49,44 +53,7 @@ class TranslateFragment : Fragment() {
                 viewModel.setTargetLanguage("German")
         }
 
-       // updateScreen()
-
-        //val old = binding.etWrite.text.toString()
-        /*
-        var new: String
-        var sourceLang: String = ""
-        var finalLang: String = ""
-        if (binding.rbEngS.isChecked)
-            sourceLang = "English"
-        else if (binding.rbGermS.isChecked)
-            sourceLang = "German"
-        else if (binding.rbSpanS.isChecked)
-            sourceLang = "Spanish"
-        if (binding.rbEngT.isChecked)
-            finalLang = "English"
-        else if (binding.rbGermT.isChecked)
-            finalLang = "German"
-        else if (binding.rbSpanT.isChecked)
-            finalLang = "Spanish"
-
-//        val languageIdentifier = LanguageIdentification.getClient(
-//            LanguageIdentificationOptions.Builder()
-//                .setConfidenceThreshold(0.5f)
-//                .build()
-//        )
-//        val options = TranslateLanguage.fromLanguageTag(sourceLang.uppercase())?.let {
-//            TranslateLanguage.fromLanguageTag(finalLang.uppercase())?.let { it1 ->
-//                TranslatorOptions.Builder()
-//                    .setSourceLanguage(it)
-//                    .setTargetLanguage(it1)
-//                    .build()
-//            }
-//        }
-//        val translator: Translator? = options?.let { Translation.getClient(it) }
-
-
-
-         */
+        //when something is typed, it is translated
         val etWrite = binding.etWrite
         etWrite.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {
@@ -98,69 +65,19 @@ class TranslateFragment : Fragment() {
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
         })
 
+        //updates the translated view
         viewModel.translatedText.observe(viewLifecycleOwner, Observer { translatedText ->
             binding.tvTran.text = translatedText
         })
-        /*
-        viewModel.sourceLanguage.observe(viewLifecycleOwner, Observer { sourceLanguage ->
-            viewModel.setSourceLanguage(sourceLanguage)
-        })
-        viewModel.targetLanguage.observe(viewLifecycleOwner, Observer {targetLanguage ->
-            viewModel.setTargetLanguage(targetLanguage)
-        })
-
-         */
-
 
         return view
     }
 
-//        var trans = viewModel.translate(sourceLang, finalLang, viewModel.original.toString())
-//        viewModel.original.observe(viewLifecycleOwner, Observer { list ->
-//
-//            binding.tvTran.text = viewModel.original.toString()
-//               // viewModel.original.value?.let { viewModel.translate(sourceLang, finalLang, it) }
-//        })
-//
-//        return view
-//    }
-
-    /*
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        val sourceLangRG = binding.sourceRG
-        val targetLangRG = binding.targetRG
-
-        sourceLangRG.setOnCheckedChangeListener{group, checkedId ->
-            if (binding.rbEngS.isChecked)
-                viewModel.setSourceLanguage(TranslateLanguage.ENGLISH)
-            else if (binding.rbSpanS.isChecked)
-                viewModel.setSourceLanguage(TranslateLanguage.SPANISH)
-            else if (binding.rbGermS.isChecked)
-                viewModel.setSourceLanguage(TranslateLanguage.GERMAN)
-
-        }
-        targetLangRG.setOnCheckedChangeListener{group, checkedId ->
-            if (binding.rbEngT.isChecked)
-                viewModel.setTargetLanguage(TranslateLanguage.ENGLISH)
-            else if (binding.rbSpanT.isChecked)
-                viewModel.setTargetLanguage(TranslateLanguage.SPANISH)
-            else if (binding.rbGermT.isChecked)
-                viewModel.setTargetLanguage(TranslateLanguage.GERMAN)
-        }
-    }
-
-     */
-
+    //on destroy, resets binding
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
     }
-
-//    fun updateScreen(){
-//        binding.tvTran.text = viewModel.trans.toString()
-//    }
-
 
 }
 

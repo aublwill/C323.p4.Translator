@@ -24,9 +24,9 @@ class MainActivity : AppCompatActivity() {
 
         val fragmentManager = supportFragmentManager
         val fragmentTransaction = fragmentManager.beginTransaction()
-        val translateFragment = TranslateFragment() // Create an instance of your TranslateFragment
+        val translateFragment = TranslateFragment() // Create an instance of TranslateFragment
 
-// Replace the FrameLayout container with the TranslateFragment
+        // Replace the FrameLayout container with the TranslateFragment
         fragmentTransaction.replace(R.id.fWrite, translateFragment)
         fragmentTransaction.commit()
     }
